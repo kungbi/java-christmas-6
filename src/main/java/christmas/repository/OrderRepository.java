@@ -8,9 +8,13 @@ import java.util.function.Predicate;
 
 public class OrderRepository implements Repository<Order> {
     private final List<Order> orders = new ArrayList<>();
+    private boolean adding = true;
 
     @Override
     public void add(Order order) {
+        if (!adding) {
+            throw new IllegalArgumentException();
+        }
         if (this.exists(order.getProductName())) {
             throw new IllegalArgumentException("Order already exists");
         }
@@ -19,6 +23,10 @@ public class OrderRepository implements Repository<Order> {
         }
 
         orders.add(order);
+    }
+
+    public void stopAdding() {
+        this.adding = false;
     }
 
     public int getTotalQuantity() {
@@ -37,11 +45,17 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public Optional<Order> findByName(String name) {
+        if (adding) {
+            throw new IllegalArgumentException();
+        }
         return orders.stream().filter(order -> order.getProductName().equals(name)).findFirst();
     }
 
     @Override
     public List<Order> findAll() {
+        if (adding) {
+            throw new IllegalArgumentException();
+        }
         return List.copyOf(orders);
     }
 
@@ -52,6 +66,9 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public boolean exists(String name) {
+        if (adding) {
+            throw new IllegalArgumentException();
+        }
         return this.findByName(name).isPresent();
     }
 
@@ -65,8 +82,4 @@ public class OrderRepository implements Repository<Order> {
         this.orders.clear();
     }
 
-    @Override
-    public List<Order> findPage(int pageNumber, int pageSize) {
-        return List.of();
-    }
 }

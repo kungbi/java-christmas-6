@@ -23,6 +23,4 @@ public interface Repository<T> {
     List<T> findByCondition(Predicate<T> condition);
 
     void clear();
-
-    List<T> findPage(int pageNumber, int pageSize);
 }
