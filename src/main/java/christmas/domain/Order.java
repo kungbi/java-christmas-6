@@ -9,7 +9,20 @@ public class Order {
     private final Map<String, Integer> products = new HashMap<>();
 
     public void addProduct(String productName, int quantity) {
+        if (quantity < 1) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+        if (products.containsKey(productName)) {
+            throw new IllegalArgumentException("Duplicate product name: " + productName);
+        }
+        if (20 < this.getTotalQuantity() + quantity) {
+            throw new IllegalArgumentException("Too much products");
+        }
         products.put(productName, quantity);
+    }
+
+    public int getTotalQuantity() {
+        return products.values().stream().mapToInt(i -> i).sum();
     }
 
     public List<String> getProductsNames() {
