@@ -22,7 +22,6 @@ public class OrderService {
             }
             orderRepository.add(orderItem);
         }
-        orderRepository.stopAdding();
         if (!validateOrder(order)) {
             throw new IllegalStateException("Invalid order");
         }

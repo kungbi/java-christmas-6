@@ -8,25 +8,11 @@ import java.util.function.Predicate;
 
 public class OrderRepository implements Repository<Order> {
     private final List<Order> orders = new ArrayList<>();
-    private boolean adding = true;
 
     @Override
     public void add(Order order) {
-        if (!adding) {
-            throw new IllegalArgumentException();
-        }
-        if (this.exists(order.getProductName())) {
-            throw new IllegalArgumentException("Order already exists");
-        }
-        if (20 < this.getTotalQuantity() + order.getQuantity()) {
-            throw new IllegalArgumentException("Too much quantity");
-        }
-
+        validateOrder(order);
         orders.add(order);
-    }
-
-    public void stopAdding() {
-        this.adding = false;
     }
 
     public int getTotalQuantity() {
@@ -60,7 +46,7 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public boolean exists(String name) {
-        return this.findByName(name).isPresent();
+        return orders.stream().anyMatch(order -> order.getProductName().equals(name));
     }
 
     @Override
@@ -73,4 +59,13 @@ public class OrderRepository implements Repository<Order> {
         this.orders.clear();
     }
 
+
+    private void validateOrder(Order order) {
+        if (this.exists(order.getProductName())) {
+            throw new IllegalArgumentException("Order already exists");
+        }
+        if (20 < this.getTotalQuantity() + order.getQuantity()) {
+            throw new IllegalArgumentException("Too much quantity");
+        }
+    }
 }

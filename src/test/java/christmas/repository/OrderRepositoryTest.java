@@ -26,8 +26,6 @@ class OrderRepositoryTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> repository.add(coke));
     }
 
-
-
     @Test
     void 주문_상품의_수가_20를_초과할_때() {
         OrderRepository repository = new OrderRepository();
