@@ -64,4 +64,8 @@ public class PromotionService {
         return product.get().getType();
     }
 
+    public boolean isApplicableAmount(int totalPrice) {
+        return 10_000 <= totalPrice;
+    }
+
 }
