@@ -6,6 +6,7 @@ import christmas.dto.PromotionPreview.GiveWayProduct;
 import christmas.dto.PromotionPreview.PromotionHistory;
 import christmas.enums.Badge;
 import java.util.List;
+import java.util.Optional;
 
 public class OutputView {
 
@@ -30,14 +31,14 @@ public class OutputView {
         System.out.println();
     }
 
-    private static void printBadge(Badge badge) {
+    private static void printBadge(Optional<Badge> badge) {
         System.out.println("<12월 이벤트 배지>");
-        if (badge != null) {
-            System.out.println(badge.getKorean());
-            System.out.println();
-            return;
+        if (badge.isPresent()) {
+            System.out.println(badge.get().getKorean());
         }
-        printNothingMessage();
+        if (badge.isEmpty()) {
+            printNothingMessage();
+        }
         System.out.println();
     }
 
@@ -72,9 +73,14 @@ public class OutputView {
         System.out.println();
     }
 
-    private static void printGiveWayProduct(GiveWayProduct giveWayProduct) {
+    private static void printGiveWayProduct(Optional<GiveWayProduct> giveWayProduct) {
         System.out.println("<증정 메뉴>");
-        System.out.printf("%s %d개\n", giveWayProduct.productName(), giveWayProduct.quantity());
+        if (giveWayProduct.isPresent()) {
+            System.out.printf("%s %d개\n", giveWayProduct.get().productName(), giveWayProduct.get().quantity());
+        }
+        if (giveWayProduct.isEmpty()) {
+            printNothingMessage();
+        }
         System.out.println();
     }
 

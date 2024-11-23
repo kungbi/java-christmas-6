@@ -2,6 +2,7 @@ package christmas.service;
 
 import christmas.domain.Order;
 import christmas.domain.Product;
+import christmas.dto.OrderItem;
 import christmas.enums.ProductType;
 import christmas.repository.OrderRepository;
 import christmas.repository.ProductRepository;
@@ -30,35 +31,35 @@ class OrderServiceTest {
 
     @Test
     void 정상() {
-        List<Order> orders = List.of(new Order("음료", 5), new Order("메인음식1", 2));
+        List<OrderItem> orders = List.of(new OrderItem("음료", 5), new OrderItem("메인음식1", 2));
 
         orderService.addOrder(orders);
     }
 
     @Test
     void 음료만_담았을_경우() {
-        List<Order> orders = List.of(new Order("음료", 5));
+        List<OrderItem> orders = List.of(new OrderItem("음료", 5));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> orderService.addOrder(orders));
     }
 
     @Test
     void 개수가_20개_초과_일_경우() {
-        List<Order> orders = List.of(new Order("음료", 20), new Order("메인음식1", 1));
+        List<OrderItem> orders = List.of(new OrderItem("음료", 20), new OrderItem("메인음식1", 1));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> orderService.addOrder(orders));
     }
 
     @Test
     void 개수가_20개() {
-        List<Order> orders = List.of(new Order("음료", 19), new Order("메인음식1", 1));
+        List<OrderItem> orders = List.of(new OrderItem("음료", 19), new OrderItem("메인음식1", 1));
 
         orderService.addOrder(orders);
     }
 
     @Test
     void 중복된_상품_주문() {
-        List<Order> orders = List.of(new Order("메인음식1", 3), new Order("메인음식1", 1));
+        List<OrderItem> orders = List.of(new OrderItem("메인음식1", 3), new OrderItem("메인음식1", 1));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> orderService.addOrder(orders));
     }

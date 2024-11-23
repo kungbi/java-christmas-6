@@ -1,6 +1,7 @@
 package christmas.service;
 
 import christmas.domain.Order;
+import christmas.dto.OrderItem;
 import christmas.enums.ProductType;
 import christmas.repository.OrderRepository;
 import christmas.repository.ProductRepository;
@@ -15,23 +16,23 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public void addOrder(List<Order> order) {
-        for (Order orderItem : order) {
-            if (!productRepository.exists(orderItem.getProductName())) {
+    public void addOrder(List<OrderItem> orders) {
+        for (OrderItem orderItem : orders) {
+            if (!productRepository.exists(orderItem.name())) {
                 throw new IllegalStateException("Product does not exist");
             }
-            orderRepository.add(orderItem);
+            orderRepository.add(new Order(orderItem.name(), orderItem.quantity()));
         }
-        if (!validateOrder(order)) {
+        if (!validateOrder(orders)) {
             throw new IllegalArgumentException("Invalid order");
         }
     }
 
-    private boolean validateOrder(List<Order> order) {
+    private boolean validateOrder(List<OrderItem> orders) {
         if (orderRepository.getTotalQuantity() == 0) {
             return false;
         }
-        for (Order orderItem : order) {
+        for (OrderItem orderItem : orders) {
             ProductType type = getProductType(orderItem);
             if (type != ProductType.DRINK) {
                 return true;
@@ -40,7 +41,7 @@ public class OrderService {
         return false;
     }
 
-    private ProductType getProductType(Order orderItem) {
-        return productRepository.findByName(orderItem.getProductName()).get().getType();
+    private ProductType getProductType(OrderItem orderItem) {
+        return productRepository.findByName(orderItem.name()).get().getType();
     }
 }

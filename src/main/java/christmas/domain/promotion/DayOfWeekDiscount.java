@@ -2,6 +2,7 @@ package christmas.domain.promotion;
 
 import christmas.enums.DayOfWeek;
 import christmas.enums.ProductType;
+import christmas.enums.PromotionType;
 import java.util.List;
 
 public interface DayOfWeekDiscount {
@@ -17,6 +18,13 @@ public interface DayOfWeekDiscount {
             return new WeekendsDiscount();
         }
         throw new IllegalArgumentException("Unknown day of week: " + dayOfWeek);
+    }
+
+    static PromotionType getPromotionType(DayOfWeek dayOfWeek) {
+        if (WEEKDAYS.contains(dayOfWeek)) {
+            return PromotionType.WEEKDAYS;
+        }
+        return PromotionType.WEEKENDS;
     }
 
     int getDiscountAmount(ProductType type);

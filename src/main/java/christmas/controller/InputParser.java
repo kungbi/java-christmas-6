@@ -28,6 +28,9 @@ public class InputParser {
 
     private static OrderItem parseOrderItem(String oneItem) {
         List<String> splitItem = Arrays.stream(oneItem.split(",")).toList();
+        if (splitItem.size() != 2) {
+            throw new IllegalArgumentException();
+        }
         String productName = splitItem.get(0);
         int quantity = parseInt(splitItem.get(1));
         return new OrderItem(productName, quantity);

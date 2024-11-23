@@ -24,4 +24,17 @@ public enum DayOfWeek {
     public String getKorean() {
         return korean;
     }
+
+    public static DayOfWeek fromOrder(int order) {
+        for (DayOfWeek day : DayOfWeek.values()) {
+            if (day.getOrder() == order) {
+                return day;
+            }
+        }
+        throw new IllegalArgumentException("Invalid order: " + order);
+    }
+
+    public static DayOfWeek fromDay(int day) {
+        return fromOrder((day + 3) % 7);
+    }
 }

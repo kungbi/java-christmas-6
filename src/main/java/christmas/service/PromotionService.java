@@ -6,8 +6,11 @@ import christmas.domain.promotion.DayOfWeekDiscount;
 import christmas.domain.promotion.DdayDiscount;
 import christmas.domain.promotion.GiveWayEvent;
 import christmas.domain.promotion.SpecialDiscount;
+import christmas.dto.PromotionPreview.GiveWayProduct;
+import christmas.dto.PromotionPreview.PromotionHistory;
 import christmas.enums.DayOfWeek;
 import christmas.enums.ProductType;
+import christmas.enums.PromotionType;
 import christmas.repository.OrderRepository;
 import christmas.repository.ProductRepository;
 import java.util.Optional;
@@ -29,11 +32,11 @@ public class PromotionService {
         this.giveWayEvent = giveWayEvent;
     }
 
-    public int getDdayDiscountAmount(int day) {
-        return dDayDiscount.getDiscountAmount(day);
+    public PromotionHistory getDdayDiscountAmount(int day) {
+        return new PromotionHistory(PromotionType.D_DAY, dDayDiscount.getDiscountAmount(day));
     }
 
-    public int getDayOfWeekDiscountAmount(DayOfWeek dayOfWeek) {
+    public PromotionHistory getDayOfWeekDiscountAmount(DayOfWeek dayOfWeek) {
         DayOfWeekDiscount dayOfWeekDiscount = DayOfWeekDiscount.of(dayOfWeek);
         int discountAmount = 0;
 
@@ -42,18 +45,31 @@ public class PromotionService {
             discountAmount += dayOfWeekDiscount.getDiscountAmount(type) * order.getQuantity();
         }
 
-        return discountAmount;
+        return new PromotionHistory(DayOfWeekDiscount.getPromotionType(dayOfWeek), discountAmount);
     }
 
-    public int specialDiscountAmount(int day) {
-        return specialDiscount.getDiscountAmount(day);
+    public PromotionHistory specialDiscountAmount(int day) {
+        return new PromotionHistory(PromotionType.SPECIAL, specialDiscount.getDiscountAmount(day));
     }
 
-    public Optional<Product> getGiveWayProduct(int amountPurchased) {
+    public Optional<GiveWayProduct> getGiveWayProduct(int amountPurchased) {
         if (giveWayEvent.isAvailable(amountPurchased)) {
-            return this.productRepository.findByName(giveWayEvent.getGiveWayProductName());
+            Product product = getProduct(giveWayEvent.getGiveWayProductName());
+            return Optional.of(new GiveWayProduct(product.getName(), product.getPrice(), 1));
         }
         return Optional.empty();
+    }
+
+    public boolean isApplicableAmount(int totalPrice) {
+        return 10_000 <= totalPrice;
+    }
+
+    private Product getProduct(String productName) {
+        Optional<Product> product = this.productRepository.findByName(giveWayEvent.getGiveWayProductName());
+        if (product.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return product.get();
     }
 
     private ProductType getProductType(String productName) {
@@ -62,10 +78,6 @@ public class PromotionService {
             throw new IllegalArgumentException("Product not found");
         }
         return product.get().getType();
-    }
-
-    public boolean isApplicableAmount(int totalPrice) {
-        return 10_000 <= totalPrice;
     }
 
 }

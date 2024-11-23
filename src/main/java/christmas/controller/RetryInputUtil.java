@@ -1,6 +1,7 @@
 package christmas.controller;
 
 import christmas.dto.OrderItem;
+import christmas.exception.GlobalErrorMessage;
 import christmas.validator.InputValidator;
 import christmas.view.InputView;
 import christmas.view.OutputView;
@@ -33,7 +34,7 @@ public class RetryInputUtil {
                 validator.accept(parsedInput);
                 return parsedInput;
             } catch (IllegalArgumentException error) {
-                OutputView.printError(error.getMessage());
+                OutputView.printError(GlobalErrorMessage.INVALID.getMessage());
             }
         }
     }

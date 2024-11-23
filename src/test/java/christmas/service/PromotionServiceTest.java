@@ -41,7 +41,7 @@ class PromotionServiceTest {
                 specialDiscount,
                 giveWayEvent);
 
-        Assertions.assertEquals(500, service.getDdayDiscountAmount(5));
+        Assertions.assertEquals(500, service.getDdayDiscountAmount(5).discountAmount());
     }
 
     @Test
@@ -55,7 +55,7 @@ class PromotionServiceTest {
                 giveWayEvent);
 
         // 디저트에 개수만큼 2023 할인
-        Assertions.assertEquals(3 * 2023, service.getDayOfWeekDiscountAmount(DayOfWeek.WEDNESDAY));
+        Assertions.assertEquals(3 * 2023, service.getDayOfWeekDiscountAmount(DayOfWeek.WEDNESDAY).discountAmount());
     }
 
     @Test
@@ -69,7 +69,7 @@ class PromotionServiceTest {
                 giveWayEvent);
 
         // 디저트에 개수만큼 2023 할인
-        Assertions.assertEquals(2 * 2023, service.getDayOfWeekDiscountAmount(DayOfWeek.FRIDAY));
+        Assertions.assertEquals(2 * 2023, service.getDayOfWeekDiscountAmount(DayOfWeek.FRIDAY).discountAmount());
     }
 
     @Test
@@ -80,7 +80,7 @@ class PromotionServiceTest {
                 specialDiscount,
                 giveWayEvent);
 
-        Assertions.assertEquals(1000, service.specialDiscountAmount(10));
+        Assertions.assertEquals(1000, service.specialDiscountAmount(10).discountAmount());
     }
 
     @Test
@@ -91,7 +91,7 @@ class PromotionServiceTest {
                 specialDiscount,
                 giveWayEvent);
 
-        Assertions.assertEquals(0, service.specialDiscountAmount(11));
+        Assertions.assertEquals(0, service.specialDiscountAmount(11).discountAmount());
     }
 
 
