@@ -15,4 +15,13 @@ public enum ProductType {
     public String getKorean() {
         return korean;
     }
+
+    public static ProductType findByKorean(String korean) {
+        for (ProductType type : ProductType.values()) {
+            if (type.getKorean().equals(korean)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown product type: " + korean);
+    }
 }
