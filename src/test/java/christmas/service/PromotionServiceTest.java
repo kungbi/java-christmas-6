@@ -41,7 +41,7 @@ class PromotionServiceTest {
                 specialDiscount,
                 giveWayEvent);
 
-        Assertions.assertEquals(500, service.getDdayDiscountAmount(5).discountAmount());
+        Assertions.assertEquals(1_400, service.getDdayDiscountAmount(5).discountAmount());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package christmas.domain.promotion;
 
 public class DdayDiscount {
+    private static final int DEFAULT_DISCOUNT = 1_000;
     private static final int DISCOUNT_PER_DAY = 100;
     private static final int START_DAY = 1;
     private static final int END_DAY = 25;
@@ -10,7 +11,7 @@ public class DdayDiscount {
             return 0;
         }
 
-        return (day - START_DAY + 1) * DISCOUNT_PER_DAY;
+        return DEFAULT_DISCOUNT + (day - START_DAY) * DISCOUNT_PER_DAY;
     }
 
     private boolean isAvailable(int day) {

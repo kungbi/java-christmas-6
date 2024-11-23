@@ -9,8 +9,8 @@ class DDayDiscountTest {
     @Test
     void 할인_금액_계산_할인_적용() {
         DdayDiscount dDayDiscount = new DdayDiscount();
-        Assertions.assertEquals(100, dDayDiscount.getDiscountAmount(1));
-        Assertions.assertEquals(2_500, dDayDiscount.getDiscountAmount(25));
+        Assertions.assertEquals(1_000, dDayDiscount.getDiscountAmount(1));
+        Assertions.assertEquals(3_400, dDayDiscount.getDiscountAmount(25));
     }
 
     @Test

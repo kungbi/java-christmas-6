@@ -18,15 +18,17 @@ public class RetryInputUtil {
     }
 
     public int getDay() {
-        return retryLogics(InputView::getDay, InputParser::parseInt, inputValidator::dayValidate);
+        return retryLogics(InputView::getDay, InputParser::parseInt, inputValidator::dayValidate,
+                GlobalErrorMessage.INVALID_DAY.getMessage());
     }
 
     public List<OrderItem> getOrderItems() {
-        return retryLogics(InputView::getOrderItems, InputParser::parseOrderItems, inputValidator::orderItemsValidate);
+        return retryLogics(InputView::getOrderItems, InputParser::parseOrderItems, inputValidator::orderItemsValidate,
+                GlobalErrorMessage.INVALID_ORDER.getMessage());
     }
 
     public <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser,
-                             Consumer<T> validator) {
+                             Consumer<T> validator, String errorMessage) {
         while (true) {
             try {
                 String userInput = userInputReader.get();
@@ -34,7 +36,7 @@ public class RetryInputUtil {
                 validator.accept(parsedInput);
                 return parsedInput;
             } catch (IllegalArgumentException error) {
-                OutputView.printError(GlobalErrorMessage.INVALID.getMessage());
+                OutputView.printError(errorMessage);
             }
         }
     }

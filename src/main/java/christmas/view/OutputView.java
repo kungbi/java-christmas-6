@@ -49,7 +49,7 @@ public class OutputView {
     }
 
     private static void printTotalDiscount(int dicount) {
-        System.out.println("<총혜택 금액>\n");
+        System.out.println("<총혜택 금액>");
         if (dicount > 0) {
             printMoney(dicount);
             System.out.println();
@@ -93,7 +93,7 @@ public class OutputView {
     private static void printOrderedMenu(List<OrderItem> orderItems) {
         System.out.println("<주문 메뉴>");
         for (OrderItem orderItem : orderItems) {
-            System.out.printf("%s %d개", orderItem.name(), orderItem.quantity());
+            System.out.printf("%s %d개\n", orderItem.name(), orderItem.quantity());
         }
         System.out.println();
 

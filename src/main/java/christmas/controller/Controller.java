@@ -34,9 +34,19 @@ public class Controller {
         List<OrderItem> orderItems = retryInputUtil.getOrderItems();
 
         orderService.addOrder(orderItems);
-
         int totalPrice = priceService.getTotalPrice();
 
+        PromotionPreview promotionPreview = new PromotionPreview(orderItems, totalPrice, Optional.empty(), List.of(), 0,
+                totalPrice, Optional.empty());
+        if (promotionService.isApplicableAmount(totalPrice)) {
+            promotionPreview = getPromotionPreview(day, totalPrice, orderItems);
+        }
+
+        OutputView.printPromotionPreview(promotionPreview);
+
+    }
+
+    private PromotionPreview getPromotionPreview(int day, int totalPrice, List<OrderItem> orderItems) {
         List<PromotionHistory> promotionHistories = new ArrayList<>();
         promotionHistories.add(promotionService.getDdayDiscountAmount(day));
         promotionHistories.add(promotionService.getDayOfWeekDiscountAmount(DayOfWeek.fromDay(day)));
@@ -54,7 +64,6 @@ public class Controller {
         PromotionPreview promotionPreview = new PromotionPreview(orderItems, totalPrice, giveWayProduct,
                 promotionHistories, totalDiscount,
                 totalPrice - totalDiscount, badge);
-        OutputView.printPromotionPreview(promotionPreview);
-
+        return promotionPreview;
     }
 }
