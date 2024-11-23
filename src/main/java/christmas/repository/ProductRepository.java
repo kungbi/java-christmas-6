@@ -56,9 +56,4 @@ public class ProductRepository implements Repository<Product> {
     public void clear() {
 
     }
-
-    @Override
-    public List<Product> findPage(int pageNumber, int pageSize) {
-        return List.of();
-    }
 }

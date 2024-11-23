@@ -45,17 +45,11 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public Optional<Order> findByName(String name) {
-        if (adding) {
-            throw new IllegalArgumentException();
-        }
         return orders.stream().filter(order -> order.getProductName().equals(name)).findFirst();
     }
 
     @Override
     public List<Order> findAll() {
-        if (adding) {
-            throw new IllegalArgumentException();
-        }
         return List.copyOf(orders);
     }
 
@@ -66,9 +60,6 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public boolean exists(String name) {
-        if (adding) {
-            throw new IllegalArgumentException();
-        }
         return this.findByName(name).isPresent();
     }
 
