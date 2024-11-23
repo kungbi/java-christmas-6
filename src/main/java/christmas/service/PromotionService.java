@@ -19,8 +19,8 @@ public class PromotionService {
     private final SpecialDiscount specialDiscount;
     private final GiveWayEvent giveWayEvent;
 
-    public PromotionService(OrderRepository orderRepository, DdayDiscount dDayDiscount,
-                            ProductRepository productRepository, SpecialDiscount specialDiscount,
+    public PromotionService(ProductRepository productRepository, OrderRepository orderRepository,
+                            DdayDiscount dDayDiscount, SpecialDiscount specialDiscount,
                             GiveWayEvent giveWayEvent) {
         this.orderRepository = orderRepository;
         this.dDayDiscount = dDayDiscount;
