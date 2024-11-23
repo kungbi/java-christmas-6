@@ -23,11 +23,14 @@ public class OrderService {
             orderRepository.add(orderItem);
         }
         if (!validateOrder(order)) {
-            throw new IllegalStateException("Invalid order");
+            throw new IllegalArgumentException("Invalid order");
         }
     }
 
     private boolean validateOrder(List<Order> order) {
+        if (orderRepository.getTotalQuantity() == 0) {
+            return false;
+        }
         for (Order orderItem : order) {
             ProductType type = getProductType(orderItem);
             if (type != ProductType.DRINK) {
