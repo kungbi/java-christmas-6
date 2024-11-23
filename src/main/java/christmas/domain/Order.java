@@ -1,38 +1,29 @@
 package christmas.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Order {
-    private final Map<String, Integer> products = new HashMap<>();
+    private final String productName;
+    private final int quantity;
 
-    public void addProduct(String productName, int quantity) {
+    public Order(String productName, int quantity) {
+        validate(productName, quantity);
+        this.productName = productName;
+        this.quantity = quantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    private void validate(String productName, int quantity) {
+        if (productName == null) {
+            throw new IllegalArgumentException("Product name cannot be null");
+        }
         if (quantity < 1) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+            throw new IllegalArgumentException("Quantity cannot be less than 1");
         }
-        if (products.containsKey(productName)) {
-            throw new IllegalArgumentException("Duplicate product name: " + productName);
-        }
-        if (20 < this.getTotalQuantity() + quantity) {
-            throw new IllegalArgumentException("Too much products");
-        }
-        products.put(productName, quantity);
-    }
-
-    public int getTotalQuantity() {
-        return products.values().stream().mapToInt(i -> i).sum();
-    }
-
-    public List<String> getProductsNames() {
-        return new ArrayList<>(products.keySet());
-    }
-
-    public int getQuantity(String productName) {
-        if (!products.containsKey(productName)) {
-            throw new IllegalArgumentException("Product " + productName + " does not exist");
-        }
-        return products.get(productName);
     }
 }
