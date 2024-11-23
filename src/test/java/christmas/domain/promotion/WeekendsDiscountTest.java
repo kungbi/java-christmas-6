@@ -9,38 +9,22 @@ class WeekendsDiscountTest {
     WeekendsDiscount discount = new WeekendsDiscount();
 
     @Test
-    void 평일_할인_일() {
-        Assertions.assertEquals(0, discount.getDiscountAmount(DayOfWeek.SUNDAY, ProductType.MAIN));
+    void 주말_할인_디저트() {
+        Assertions.assertEquals(0, discount.getDiscountAmount(ProductType.DESERT));
     }
 
     @Test
-    void 평일_할인_월() {
-        Assertions.assertEquals(0, discount.getDiscountAmount(DayOfWeek.MONDAY, ProductType.MAIN));
+    void 주말_할인_메인() {
+        Assertions.assertEquals(2_023, discount.getDiscountAmount(ProductType.MAIN));
     }
 
     @Test
-    void 평일_할인_화() {
-        Assertions.assertEquals(0, discount.getDiscountAmount(DayOfWeek.TUESDAY, ProductType.MAIN));
+    void 주말_할인_음료() {
+        Assertions.assertEquals(0, discount.getDiscountAmount(ProductType.DRINK));
     }
 
     @Test
-    void 평일_할인_수() {
-        Assertions.assertEquals(0, discount.getDiscountAmount(DayOfWeek.WEDNESDAY, ProductType.MAIN));
+    void 주말_할인_에피타이저() {
+        Assertions.assertEquals(0, discount.getDiscountAmount(ProductType.APPETIZER));
     }
-
-    @Test
-    void 평일_할인_목() {
-        Assertions.assertEquals(0, discount.getDiscountAmount(DayOfWeek.THURSDAY, ProductType.MAIN));
-    }
-
-    @Test
-    void 평일_할인_금() {
-        Assertions.assertEquals(2_023, discount.getDiscountAmount(DayOfWeek.FRIDAY, ProductType.MAIN));
-    }
-
-    @Test
-    void 평일_할인_토() {
-        Assertions.assertEquals(2_023, discount.getDiscountAmount(DayOfWeek.SATURDAY, ProductType.MAIN));
-    }
-
 }

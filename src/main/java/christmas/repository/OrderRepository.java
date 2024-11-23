@@ -42,7 +42,7 @@ public class OrderRepository implements Repository<Order> {
 
     @Override
     public List<Order> findAll() {
-        return List.of();
+        return List.copyOf(orders);
     }
 
     @Override
