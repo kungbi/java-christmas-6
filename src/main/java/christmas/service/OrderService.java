@@ -1,6 +1,7 @@
 package christmas.service;
 
 import christmas.domain.Order;
+import christmas.enums.ProductType;
 import christmas.repository.OrderRepository;
 import christmas.repository.ProductRepository;
 import java.util.List;
@@ -22,5 +23,22 @@ public class OrderService {
             orderRepository.add(orderItem);
         }
         orderRepository.stopAdding();
+        if (!validateOrder(order)) {
+            throw new IllegalStateException("Invalid order");
+        }
+    }
+
+    private boolean validateOrder(List<Order> order) {
+        for (Order orderItem : order) {
+            ProductType type = getProductType(orderItem);
+            if (type != ProductType.DRINK) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ProductType getProductType(Order orderItem) {
+        return productRepository.findByName(orderItem.getProductName()).get().getType();
     }
 }
