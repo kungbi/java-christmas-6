@@ -40,6 +40,7 @@ public class ProductRepository implements Repository<Product> {
 
     @Override
     public boolean exists(String name) {
-        return false;
+        Optional<Product> product = this.findByName(name);
+        return product.isPresent();
     }
 }
