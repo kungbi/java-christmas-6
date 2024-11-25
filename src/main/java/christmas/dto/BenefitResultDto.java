@@ -17,32 +17,60 @@ public record BenefitResultDto(
         Optional<Badge> badge
 ) {
 
-    /**
-     * <주문 메뉴>
-     * 티본스테이크 1개
-     * 바비큐립 1개
-     * 초코케이크 2개
-     * 제로콜라 1개
-     *
-     * <할인 전 총주문 금액>
-     * 142,000원
-     *
-     * <증정 메뉴>
-     * 샴페인 1개
-     *
-     * <혜택 내역>
-     * 크리스마스 디데이 할인: -1,200원
-     * 평일 할인: -4,046원
-     * 특별 할인: -1,000원
-     * 증정 이벤트: -25,000원
-     *
-     * <총혜택 금액>
-     * -31,246원
-     *
-     * <할인 후 예상 결제 금액>
-     * 135,754원
-     *
-     * <12월 이벤트 배지>
-     * 산타
-     */
+    public static class Builder {
+        int day;
+        List<ItemDto> orderedItems;
+        int totalPrice;
+        Optional<ItemDto> giveaway;
+        Map<BenefitType, Integer> benefits;
+        int totalBenefitAmount;
+        int expectedPaymentAmount;
+        Optional<Badge> badge;
+
+        public Builder day(int day) {
+            this.day = day;
+            return this;
+        }
+
+        public Builder orderedItems(List<ItemDto> orderedItems) {
+            this.orderedItems = orderedItems;
+            return this;
+        }
+
+        public Builder totalPrice(int totalPrice) {
+            this.totalPrice = totalPrice;
+            return this;
+        }
+
+        public Builder giveaway(Optional<ItemDto> giveaway) {
+            this.giveaway = giveaway;
+            return this;
+        }
+
+        public Builder benefits(Map<BenefitType, Integer> benefits) {
+            this.benefits = benefits;
+            return this;
+        }
+
+        public Builder totalBenefitAmount(int totalBenefitAmount) {
+            this.totalBenefitAmount = totalBenefitAmount;
+            return this;
+        }
+
+        public Builder expectedPaymentAmount(int expectedPaymentAmount) {
+            this.expectedPaymentAmount = expectedPaymentAmount;
+            return this;
+        }
+
+        public Builder badge(Optional<Badge> badge) {
+            this.badge = badge;
+            return this;
+        }
+
+        public BenefitResultDto build() {
+            return new BenefitResultDto(day, orderedItems, totalPrice, giveaway, benefits,
+                    totalBenefitAmount,
+                    expectedPaymentAmount, badge);
+        }
+    }
 }

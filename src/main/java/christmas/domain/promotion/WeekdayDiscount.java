@@ -1,6 +1,6 @@
 package christmas.domain.promotion;
 
-import christmas.dto.ItemDto;
+import christmas.domain.Order;
 import christmas.enums.DayOfWeek;
 import christmas.enums.ProductType;
 import java.util.List;
@@ -10,14 +10,14 @@ public class WeekdayDiscount {
     private static final List<DayOfWeek> APPLICABLE_DAYS_OF_WEEK = List.of(DayOfWeek.SUNDAY, DayOfWeek.MONDAY,
             DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.TUESDAY, DayOfWeek.SATURDAY);
 
-    public static int calculateDiscount(ItemDto item, DayOfWeek dayOfWeek) {
-        if (!isAvailable(item, dayOfWeek)) {
+    public static int calculateDiscount(Order order, DayOfWeek dayOfWeek) {
+        if (!isAvailable(order, dayOfWeek)) {
             return 0;
         }
-        return item.quantity() * DISCOUNT_AMOUNT;
+        return order.getQuantity() * DISCOUNT_AMOUNT;
     }
 
-    private static boolean isAvailable(ItemDto item, DayOfWeek dayOfWeek) {
-        return APPLICABLE_DAYS_OF_WEEK.contains(dayOfWeek) && item.product().type() == ProductType.DESERT;
+    private static boolean isAvailable(Order order, DayOfWeek dayOfWeek) {
+        return APPLICABLE_DAYS_OF_WEEK.contains(dayOfWeek) && order.getProductType() == ProductType.DESERT;
     }
 }

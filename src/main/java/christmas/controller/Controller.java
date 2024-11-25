@@ -1,14 +1,26 @@
 package christmas.controller;
 
+import christmas.domain.Order;
 import christmas.domain.Orders;
+import christmas.domain.product.Product;
 import christmas.domain.promotion.DDayDiscount;
+import christmas.domain.promotion.GiveawayPromotion;
 import christmas.domain.promotion.SpecialDiscount;
+import christmas.domain.promotion.WeekdayDiscount;
+import christmas.domain.promotion.WeekendDiscount;
+import christmas.dto.BenefitResultDto;
+import christmas.dto.BenefitResultDto.Builder;
+import christmas.dto.ItemDto;
+import christmas.dto.ProductDto;
+import christmas.enums.Badge;
 import christmas.enums.BenefitType;
 import christmas.enums.DayOfWeek;
+import christmas.initializer.ProductInitializer;
 import christmas.repository.ProductRepository;
 import christmas.view.OutputView;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Controller {
     private final ProductRepository productRepository;
@@ -25,24 +37,55 @@ public class Controller {
         Orders orders = retryInputUtil.getOrders();
 
         int totalPrice = orders.calculateTotalPrice();
+        Map<BenefitType, Integer> benefits = new HashMap<>();
         if (10_000 <= totalPrice) {
-//            applyPromotion(orders);
+            benefits = applyPromotion(orders, day,
+                    DayOfWeek.getDayOfWeekAsDate(day));
         }
 
-        // 증정 행사 적용
+        ItemDto giveaway = null;
+        if (GiveawayPromotion.isAvailable(totalPrice)) {
+            Optional<Product> product = productRepository.findByName(GiveawayPromotion.getGiveawayProductName());
+            if (product.isEmpty()) {
+                throw new IllegalArgumentException("Giveaway product not found");
+            }
+            giveaway = new ItemDto(ProductDto.from(product.get()), GiveawayPromotion.getGiveawayProductQuantity());
+            benefits.put(BenefitType.GIVEAWAY, giveaway.product().price() * giveaway.quantity());
+        }
 
+        int totalBenefit = benefits.values().stream().mapToInt(Integer::intValue).sum();
 
-//        총주문 금액 10,000원 이상부터 이벤트가 적용됩니다.
-//        총혜택 금액 = 할인 금액의 합계 + 증정 메뉴의 가격
-//        할인 후 예상 결제 금액 = 할인 전 총주문 금액 - 할인 금액   ; 할인금액은 증정 메뉴가격과는 별도
+        int totalDiscount = benefits.entrySet().stream().filter(entry -> entry.getKey() != BenefitType.GIVEAWAY)
+                .mapToInt(entry -> entry.getValue()).sum();
+
+        BenefitResultDto benefitResult = new Builder()
+                .day(day)
+                .orderedItems(orders.toDto())
+                .benefits(benefits)
+                .giveaway(Optional.ofNullable(giveaway))
+                .totalPrice(totalPrice)
+                .totalBenefitAmount(totalBenefit)
+                .expectedPaymentAmount(totalPrice - totalDiscount)
+                .badge(Badge.getBadgeByPaymentAmount(totalDiscount))
+                .build();
+        OutputView.printBenefitResult(benefitResult);
     }
 
     private Map<BenefitType, Integer> applyPromotion(Orders orders, int day, DayOfWeek dayOfWeek) {
         Map<BenefitType, Integer> promotions = new HashMap<>();
 
-        int dDayDiscountAmount = DDayDiscount.calculateDiscount(day);
-        int specialDiscountAmount = SpecialDiscount.calculateDiscount(day);
-        return null;
+        promotions.put(BenefitType.D_DAY, DDayDiscount.calculateDiscount(day));
+        promotions.put(BenefitType.SPECIAL, SpecialDiscount.calculateDiscount(day));
+        for (Order order : orders.getOrders()) {
+            promotions.putIfAbsent(BenefitType.WEEKEND, 0);
+            promotions.putIfAbsent(BenefitType.WEEKDAY, 0);
+            promotions.put(BenefitType.WEEKDAY,
+                    promotions.get(BenefitType.WEEKDAY) + WeekdayDiscount.calculateDiscount(order, dayOfWeek));
+            promotions.put(BenefitType.WEEKEND,
+                    promotions.get(BenefitType.WEEKEND) + WeekendDiscount.calculateDiscount(order, dayOfWeek));
+        }
+
+        return promotions;
     }
 
 

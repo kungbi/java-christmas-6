@@ -21,7 +21,7 @@ public enum Badge {
         return name;
     }
 
-    static Optional<Badge> getBadgeByPaymentAmount(int discountAmount) {
+    public static Optional<Badge> getBadgeByPaymentAmount(int discountAmount) {
         List<Badge> badges = Arrays.stream(Badge.values()).sorted().toList();
 
         Badge selectedBadge = null;

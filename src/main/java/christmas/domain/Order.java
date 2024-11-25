@@ -1,6 +1,7 @@
 package christmas.domain;
 
 import christmas.domain.product.Product;
+import christmas.dto.ProductDto;
 import christmas.enums.ProductType;
 import christmas.validator.OrderValidator;
 
@@ -12,6 +13,10 @@ public class Order {
         OrderValidator.validate(product, quantity);
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public ProductDto getProduct() {
+        return ProductDto.from(product);
     }
 
     public String getProductName() {
