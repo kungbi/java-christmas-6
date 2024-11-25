@@ -19,9 +19,11 @@ import christmas.enums.DayOfWeek;
 import christmas.repository.ProductRepository;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public class PromotionService {
+    public static final int PROMOTION_MIN_AMOUNT = 10_000;
     private final ProductRepository productRepository;
 
     public PromotionService(ProductRepository productRepository) {
@@ -33,23 +35,10 @@ public class PromotionService {
         Orders orders = input.orders();
 
         int totalPrice = orders.calculateTotalPrice();
-        Map<BenefitType, Integer> benefits = new HashMap<>();
-        if (10_000 <= totalPrice) {
-            benefits = applyPromotion(orders, day,
-                    DayOfWeek.getDayOfWeekAsDate(day));
-        }
-        ItemDto giveaway = null;
-        if (GiveawayPromotion.isAvailable(totalPrice)) {
-            Optional<Product> product = productRepository.findByName(GiveawayPromotion.getGiveawayProductName());
-            if (product.isEmpty()) {
-                throw new IllegalArgumentException("Giveaway product not found");
-            }
-            giveaway = new ItemDto(ProductDto.from(product.get()), GiveawayPromotion.getGiveawayProductQuantity());
-            benefits.put(BenefitType.GIVEAWAY, giveaway.product().price() * giveaway.quantity());
-        }
-        int totalBenefit = benefits.values().stream().mapToInt(Integer::intValue).sum();
-        int totalDiscount = benefits.entrySet().stream().filter(entry -> entry.getKey() != BenefitType.GIVEAWAY)
-                .mapToInt(entry -> entry.getValue()).sum();
+        Map<BenefitType, Integer> benefits = applyDiscounts(totalPrice, orders, day);
+        ItemDto giveaway = applyGiveawayPromotion(totalPrice, benefits);
+        int totalBenefit = calculateTotalBanefit(benefits);
+        int totalDiscount = calculateTotalDiscount(benefits);
 
         return new Builder()
                 .day(day)
@@ -61,6 +50,31 @@ public class PromotionService {
                 .expectedPaymentAmount(totalPrice - totalDiscount)
                 .badge(Badge.getBadgeByPaymentAmount(totalDiscount))
                 .build();
+    }
+
+    private Map<BenefitType, Integer> applyDiscounts(int totalPrice, Orders orders, int day) {
+        if (PROMOTION_MIN_AMOUNT <= totalPrice) {
+            return applyPromotion(orders, day, DayOfWeek.getDayOfWeekAsDate(day));
+        }
+        return Map.of();
+    }
+
+    private int calculateTotalDiscount(Map<BenefitType, Integer> benefits) {
+        return benefits.entrySet().stream().filter(entry -> entry.getKey() != BenefitType.GIVEAWAY)
+                .mapToInt(Entry::getValue).sum();
+    }
+
+    private ItemDto applyGiveawayPromotion(int totalPrice, Map<BenefitType, Integer> benefits) {
+        ItemDto giveaway = null;
+        if (GiveawayPromotion.isAvailable(totalPrice)) {
+            Optional<Product> product = productRepository.findByName(GiveawayPromotion.getGiveawayProductName());
+            if (product.isEmpty()) {
+                throw new IllegalArgumentException("Giveaway product not found");
+            }
+            giveaway = new ItemDto(ProductDto.from(product.get()), GiveawayPromotion.getGiveawayProductQuantity());
+            benefits.put(BenefitType.GIVEAWAY, giveaway.product().price() * giveaway.quantity());
+        }
+        return giveaway;
     }
 
     private Map<BenefitType, Integer> applyPromotion(Orders orders, int day, DayOfWeek dayOfWeek) {
@@ -78,5 +92,9 @@ public class PromotionService {
         }
 
         return promotions;
+    }
+
+    private static int calculateTotalBanefit(Map<BenefitType, Integer> benefits) {
+        return benefits.values().stream().mapToInt(Integer::intValue).sum();
     }
 }
