@@ -33,11 +33,11 @@ public class InputParser {
         for (String itemInput : splitInput) {
             List<String> field = Arrays.stream(itemInput.split("-")).toList();
 
-            Optional<Product> product = this.productRepository.findByName(field.get(ITEM_NAME_INDEX));
+            Optional<Product> product = this.productRepository.findByName(field.get(ITEM_NAME_INDEX).strip());
             if (product.isEmpty()) {
                 throw new IllegalArgumentException();
             }
-            orders.add(new Order(product.get(), parseInt(field.get(ITEM_QUANTITY_INDEX))));
+            orders.add(new Order(product.get(), parseInt(field.get(ITEM_QUANTITY_INDEX).strip())));
         }
         return new Orders(orders);
     }

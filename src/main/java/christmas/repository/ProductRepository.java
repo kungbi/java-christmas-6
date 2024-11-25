@@ -25,7 +25,7 @@ public class ProductRepository implements Repository<Product> {
 
     @Override
     public Optional<Product> findByName(String name) {
-        return Optional.empty();
+        return this.products.stream().filter(product -> product.getName().equals(name)).findFirst();
     }
 
     @Override

@@ -16,11 +16,11 @@ public class RetryInputUtil {
     }
 
     public int getDay() {
-        return retryLogics(InputView::getDay, inputParser::parseInt, this::dayValidate);
+        return retryLogics(InputView::getDay, inputParser::parseInt, this::dayValidate, "유효하지 않은 날짜입니다. 다시 입력해 주세요.");
     }
 
     public Orders getOrders() {
-        return retryLogics(InputView::getOrders, inputParser::parseOrders);
+        return retryLogics(InputView::getOrders, inputParser::parseOrders, "유효하지 않은 주문입니다. 다시 입력해 주세요.");
     }
 
     private void dayValidate(int day) {
@@ -29,7 +29,7 @@ public class RetryInputUtil {
         }
     }
 
-    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser, Consumer<T> validator) {
+    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser, Consumer<T> validator, String errorMessage) {
         while (true) {
             try {
                 String userInput = userInputReader.get();
@@ -37,18 +37,18 @@ public class RetryInputUtil {
                 validator.accept(parsedInput);
                 return parsedInput;
             } catch (IllegalArgumentException error) {
-                OutputView.printError(error.getMessage());
+                OutputView.printError(errorMessage);
             }
         }
     }
 
-    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser) {
+    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser, String errorMessage) {
         while (true) {
             try {
                 String userInput = userInputReader.get();
                 return parser.apply(userInput);
             } catch (IllegalArgumentException error) {
-                OutputView.printError(error.getMessage());
+                OutputView.printError(errorMessage);
             }
 
         }
