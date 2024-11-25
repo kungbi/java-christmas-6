@@ -5,14 +5,20 @@ import java.util.List;
 import java.util.Optional;
 
 public enum Badge {
-    STAR(5_000),
-    TREE(10_000),
-    SANTA(20_000);
+    STAR(5_000, "별"),
+    TREE(10_000, "트리"),
+    SANTA(20_000, "산타");
 
     private final int discountAmount;
+    private final String name;
 
-    Badge(int discountAmount) {
+    Badge(int discountAmount, String name) {
         this.discountAmount = discountAmount;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     static Optional<Badge> getBadgeByPaymentAmount(int discountAmount) {

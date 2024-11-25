@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public record BenefitResultDto(
+        int day,
         List<ItemDto> orderedItems,
-        ItemDto giveaway,
+        int totalPrice,
+        Optional<ItemDto> giveaway,
         Map<BenefitType, Integer> benefits,
         int totalBenefitAmount,
         int expectedPaymentAmount,
