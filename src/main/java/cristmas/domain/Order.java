@@ -2,13 +2,14 @@ package cristmas.domain;
 
 import cristmas.domain.product.Product;
 import cristmas.enums.ProductType;
+import cristmas.validator.OrderValidator;
 
 public class Order {
     private final Product product;
     private final int quantity;
 
     public Order(Product product, int quantity) {
-        validate(product, quantity);
+        OrderValidator.validate(product, quantity);
         this.product = product;
         this.quantity = quantity;
     }
@@ -19,15 +20,6 @@ public class Order {
 
     public int getQuantity() {
         return quantity;
-    }
-
-    private void validate(Product product, int quantity) {
-        if (product == null) {
-            throw new IllegalArgumentException();
-        }
-        if (quantity < 1) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Override
