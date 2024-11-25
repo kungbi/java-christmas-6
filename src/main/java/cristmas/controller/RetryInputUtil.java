@@ -1,14 +1,35 @@
 package cristmas.controller;
 
+import cristmas.domain.Orders;
+import cristmas.view.InputView;
+import cristmas.view.OutputView;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import cristmas.view.OutputView;
 
 public class RetryInputUtil {
 
-    public static <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser,
-                                    Consumer<T> validator) {
+    private final InputParser inputParser;
+
+    public RetryInputUtil(InputParser inputParser) {
+        this.inputParser = inputParser;
+    }
+
+    public int getDay() {
+        return retryLogics(InputView::getDay, inputParser::parseInt, this::dayValidate);
+    }
+
+    public Orders getOrders() {
+        return retryLogics(InputView::getOrders, inputParser::parseOrders);
+    }
+
+    private void dayValidate(int day) {
+        if (!(1 <= day && day <= 31)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser, Consumer<T> validator) {
         while (true) {
             try {
                 String userInput = userInputReader.get();
@@ -21,12 +42,11 @@ public class RetryInputUtil {
         }
     }
 
-    public static String retryLogics(Supplier<String> userInputReader, Consumer<String> validator) {
+    private <T> T retryLogics(Supplier<String> userInputReader, Function<String, T> parser) {
         while (true) {
             try {
                 String userInput = userInputReader.get();
-                validator.accept(userInput);
-                return userInput;
+                return parser.apply(userInput);
             } catch (IllegalArgumentException error) {
                 OutputView.printError(error.getMessage());
             }
