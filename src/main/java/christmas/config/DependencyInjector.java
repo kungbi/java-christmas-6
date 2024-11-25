@@ -7,18 +7,20 @@ import christmas.file.parser.ProductParser;
 import christmas.file.reader.CsvReader;
 import christmas.initializer.ProductInitializer;
 import christmas.repository.ProductRepository;
+import christmas.service.PromotionService;
 
 public class DependencyInjector {
     public Controller createController() {
         ProductRepository productRepository = getProductRepository();
         InputParser inputParser = getInputParser(productRepository);
         RetryInputUtil retryInputUtil = getRetryInputUtil(inputParser);
+        PromotionService promotionService = new PromotionService(productRepository);
 
         ProductParser productParser = new ProductParser(CsvReader.of("products.md", false));
         ProductInitializer initializer = new ProductInitializer(productRepository, productParser);
         initializer.init();
 
-        return new Controller(productRepository, retryInputUtil);
+        return new Controller(retryInputUtil, promotionService);
     }
 
     private static ProductRepository getProductRepository() {
