@@ -18,6 +18,10 @@ public class Order {
         return this.product.getName();
     }
 
+    public int getPrice() {
+        return this.product.getPrice() * this.quantity;
+    }
+
     public ProductType getProductType() {
         return this.product.getType();
     }

@@ -11,6 +11,10 @@ public class Orders {
         this.orders = orders;
     }
 
+    public int calculateTotalPrice() {
+        return orders.stream().mapToInt(Order::getPrice).sum();
+    }
+
     @Override
     public String toString() {
         return "Orders{" +

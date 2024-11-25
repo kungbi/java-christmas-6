@@ -6,14 +6,14 @@ public class DDayDiscount {
     private static final int START_DAY = 1;
     private static final int END_DAY = 25;
 
-    public int calculateDiscount(int day) {
+    public static int calculateDiscount(int day) {
         if (!isAvailable(day)) {
             return 0;
         }
         return DEFAULT_DISCOUNT + (day - START_DAY) * DISCOUNT_PER_DAY;
     }
 
-    public boolean isAvailable(int day) {
+    private static boolean isAvailable(int day) {
         return START_DAY <= day && day <= END_DAY;
     }
 }
