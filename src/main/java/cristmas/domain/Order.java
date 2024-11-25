@@ -14,6 +14,10 @@ public class Order {
         this.quantity = quantity;
     }
 
+    public String getProductName() {
+        return this.product.getName();
+    }
+
     public ProductType getProductType() {
         return this.product.getType();
     }

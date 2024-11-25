@@ -15,6 +15,9 @@ public class OrdersValidator {
         if (20 < orders.stream().mapToInt(Order::getQuantity).sum()) {
             throw new IllegalArgumentException();
         }
+        if (orders.stream().map(Order::getProductName).distinct().count() != orders.size()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private static boolean validateIsOnlyDrink(List<Order> orders) {
